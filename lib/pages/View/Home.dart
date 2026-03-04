@@ -1,4 +1,10 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:shop/components/Home/Category.dart';
+import 'package:shop/components/Home/Hot.dart';
+import 'package:shop/components/Home/MoreList.dart';
+import 'package:shop/components/Home/Slider.dart';
+import 'package:shop/components/Home/Suggestion.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -8,8 +14,52 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+
+  List<Widget> _getScrollChildren(){
+    return [
+      //轮播图
+      SliverToBoxAdapter(child: ShopSlider()),
+
+      //间距
+      SliverToBoxAdapter(child: SizedBox(height: 10)),
+
+      //横向滚动-分类
+      SliverToBoxAdapter(child: Category()),
+
+      //间距
+      SliverToBoxAdapter(child: SizedBox(height: 10)),
+
+      //推荐
+      SliverToBoxAdapter(child: Suggestion()),
+
+      //间距
+      SliverToBoxAdapter(child: SizedBox(height: 10)),
+
+      //爆款推荐
+      SliverToBoxAdapter(
+        child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+        child: Flex(
+          direction: Axis.horizontal,
+          children: [
+            Expanded(child: Hot()),
+            SizedBox(width: 10),
+            Expanded(child: Hot()),
+          ],
+        ),
+        )
+      ),
+
+      //间距
+      SliverToBoxAdapter(child: SizedBox(height: 10)),
+
+      //无限列表
+      MoreList()
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text("首页"),);
+    return CustomScrollView(slivers : _getScrollChildren());
   }
 }
