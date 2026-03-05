@@ -19,6 +19,9 @@ class _HomeViewState extends State<HomeView> {
 
   List<BannerItem> _bannerList = [];
 
+  //分类列表
+  List<CategoryItem> _categoryList = [];
+
 
   List<Widget> _getScrollChildren(){
     return [
@@ -29,7 +32,7 @@ class _HomeViewState extends State<HomeView> {
       SliverToBoxAdapter(child: SizedBox(height: 10)),
 
       //横向滚动-分类
-      SliverToBoxAdapter(child: Category()),
+      SliverToBoxAdapter(child: Category(categoryList: _categoryList)),
 
       //间距
       SliverToBoxAdapter(child: SizedBox(height: 10)),
@@ -63,9 +66,15 @@ class _HomeViewState extends State<HomeView> {
     ];
   }
 
-  //网络请求，获取列表
+  //获取轮播图列表
   void _getBannerList() async{
     _bannerList = await getBannerListAPI();
+    setState(() {});
+  }
+
+  //获取分类列表
+  void _getCategoryList() async{
+    _categoryList = await getCategoryListAPI();
     setState(() {});
   }
 
@@ -73,6 +82,7 @@ class _HomeViewState extends State<HomeView> {
   void initState() {
     super.initState();
     _getBannerList();
+    _getCategoryList();
   }
 
   @override
