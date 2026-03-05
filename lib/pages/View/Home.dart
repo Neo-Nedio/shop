@@ -39,6 +39,9 @@ class _HomeViewState extends State<HomeView> {
     subTypes: [],
   );
 
+  // 推荐列表
+  List<GoodDetailItem> _recommendList = [];
+
 
 
   List<Widget> _getScrollChildren(){
@@ -73,7 +76,7 @@ class _HomeViewState extends State<HomeView> {
               ),
 
               SizedBox(width: 10),
-              
+
               Expanded(
                 child: Hot(result: _oneStopResult, type: "step"),
               ),
@@ -86,7 +89,7 @@ class _HomeViewState extends State<HomeView> {
       SliverToBoxAdapter(child: SizedBox(height: 10)),
 
       //无限列表
-      MoreList()
+      MoreList(recommendList: _recommendList), // 无限滚动列表
     ];
   }
 
@@ -120,6 +123,13 @@ class _HomeViewState extends State<HomeView> {
     setState(() {});
   }
 
+  // 获取推荐列表
+  void _getRecommendList() async {
+    //limit是网络请求的参数，用来控制传回数据的多少
+    _recommendList = await getRecommendListAPI({"limit": 10});
+    setState(() {});
+  }
+
 
   @override
   void initState() {
@@ -129,6 +139,7 @@ class _HomeViewState extends State<HomeView> {
     _getSpecialOfferList();
     _getInVogueList();
     _getOneStopList();
+    _getRecommendList();
   }
 
   @override
