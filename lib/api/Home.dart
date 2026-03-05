@@ -21,3 +21,19 @@ Future<SpecialOfferResult> getSpecialOfferListAPI() async{
   return SpecialOfferResult.formJson(
     await dioRequest.get(HttpConstants.PRODUCT_LIST));
 }
+
+// 热榜推荐
+Future<SpecialOfferResult> getInVogueListAPI() async {
+  // 返回请求
+  return SpecialOfferResult.formJson(
+    await dioRequest.get(HttpConstants.IN_VOGUE_LIST),
+  );
+}
+
+// 一站式推荐
+Future<SpecialOfferResult> getOneStopListAPI() async {
+  // 返回请求
+  return SpecialOfferResult.formJson(
+    await dioRequest.get(HttpConstants.ONE_STOP_LIST),
+  );
+}
