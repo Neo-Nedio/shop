@@ -37,3 +37,82 @@ class CategoryItem{
     );
   }
 }
+
+//获取特惠推荐数据
+class SpecialOfferResult{
+  String id;
+  String title;
+  List<SubType> subTypes;
+
+  SpecialOfferResult({required this.id, required this.title, required this.subTypes});
+
+  factory SpecialOfferResult.formJson(Map<String,dynamic> json){
+    return SpecialOfferResult(
+      id: json["id"] ?? "",
+      title: json["title"] ?? "",
+      subTypes: json["subTypes"] != null
+        ? (json["subTypes"] as List).map((item) => SubType.formJson(item as Map<String,dynamic>)).toList()
+        : <SubType>[],
+    );
+  }
+}
+
+class SubType{
+  String id;
+  String title;
+  GoodsItems goodsItems;
+
+  SubType({required this.id, required this.title, required this.goodsItems});
+
+  factory SubType.formJson(Map<String,dynamic> json){
+    return SubType(
+      id: json["id"] ?? "",
+      title: json["title"] ?? "",
+      goodsItems: GoodsItems.formJson(json["goodsItems"] ?? {}),
+    );
+  }
+}
+
+class GoodsItems{
+  int counts;
+  int pageSize;
+  int pages;
+  int page;
+  List<GoodsItem> items;
+
+  GoodsItems({required this.counts, required this.pageSize, required this.pages, required this.page, required this.items});
+
+  factory GoodsItems.formJson(Map<String,dynamic> json){
+    return GoodsItems(
+      counts: json["counts"] ?? 0,
+      pageSize: json["pageSize"] ?? 0,
+      pages: json["pages"] ?? 0,
+      page: json["page"] ?? 1,
+      items: json["items"] != null
+        ? (json["items"] as List).map((item) => GoodsItem.formJson(item as Map<String,dynamic>)).toList()
+        : <GoodsItem>[],
+    );
+  }
+}
+
+class GoodsItem{
+  String id;
+  String name;
+  String? desc;
+  String price;
+  String picture;
+  int orderNum;
+
+  GoodsItem({required this.id, required this.name, this.desc, required this.price, required this.picture, required this.orderNum});
+
+  factory GoodsItem.formJson(Map<String,dynamic> json){
+    return GoodsItem(
+      id: json["id"] ?? "",
+      name: json["name"] ?? "",
+      desc: json["desc"],
+      price: json["price"]?.toString() ?? "",
+      picture: json["picture"] ?? "",
+      orderNum: json["orderNum"] ?? 0,
+    );
+  }
+}

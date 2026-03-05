@@ -22,6 +22,10 @@ class _HomeViewState extends State<HomeView> {
   //分类列表
   List<CategoryItem> _categoryList = [];
 
+  //特惠推荐
+  SpecialOfferResult _specialOfferResult = SpecialOfferResult(
+    id: "", title: "", subTypes: []);
+
 
   List<Widget> _getScrollChildren(){
     return [
@@ -38,7 +42,7 @@ class _HomeViewState extends State<HomeView> {
       SliverToBoxAdapter(child: SizedBox(height: 10)),
 
       //推荐
-      SliverToBoxAdapter(child: Suggestion()),
+      SliverToBoxAdapter(child: Suggestion(specialOfferResult: _specialOfferResult)),
 
       //间距
       SliverToBoxAdapter(child: SizedBox(height: 10)),
@@ -78,11 +82,18 @@ class _HomeViewState extends State<HomeView> {
     setState(() {});
   }
 
+  //获取特惠推荐
+  void _getSpecialOfferList() async{
+    _specialOfferResult = await getSpecialOfferListAPI();
+    setState(() {});
+  }
+
   @override
   void initState() {
     super.initState();
     _getBannerList();
     _getCategoryList();
+    _getSpecialOfferList();
   }
 
   @override
