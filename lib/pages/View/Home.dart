@@ -6,6 +6,7 @@ import 'package:shop/components/Home/Hot.dart';
 import 'package:shop/components/Home/MoreList.dart';
 import 'package:shop/components/Home/Slider.dart';
 import 'package:shop/components/Home/Suggestion.dart';
+import 'package:shop/utils/ToastUtils.dart';
 import 'package:shop/viewModels/Home.dart';
 
 class HomeView extends StatefulWidget {
@@ -101,37 +102,32 @@ class _HomeViewState extends State<HomeView> {
   }
 
   //获取轮播图列表
-  void _getBannerList() async{
+  Future<void> _getBannerList() async{
     _bannerList = await getBannerListAPI();
-    setState(() {});
   }
 
   //获取分类列表
-  void _getCategoryList() async{
+  Future<void> _getCategoryList() async{
     _categoryList = await getCategoryListAPI();
-    setState(() {});
   }
 
   //获取特惠推荐
-  void _getSpecialOfferList() async{
+  Future<void> _getSpecialOfferList() async{
     _specialOfferResult = await getSpecialOfferListAPI();
-    setState(() {});
   }
 
   // 获取热榜推荐列表
-  void _getInVogueList() async {
+  Future<void> _getInVogueList() async {
     _inVogueResult = await getInVogueListAPI();
-    setState(() {});
   }
 
   // 获取一站式推荐列表
-  void _getOneStopList() async {
+  Future<void> _getOneStopList() async {
     _oneStopResult = await getOneStopListAPI();
-    setState(() {});
   }
 
   // 获取推荐列表
-  void _getRecommendList() async {
+  Future<void> _getRecommendList() async {
     //正在请求 或 没有下一页 ,放弃请求
     if(_isLoading || !_hasMore) {return;}
     _isLoading = true;
@@ -160,23 +156,60 @@ class _HomeViewState extends State<HomeView> {
     });
   }
 
+  //刷新函数
+  Future<void> _onRefresh() async{
+     _page = 1;
+     _isLoading = false;
+     _hasMore = true;
+     await _getBannerList();
+     await _getCategoryList();
+     await _getSpecialOfferList();
+     await _getInVogueList();
+     await _getOneStopList();
+     await _getRecommendList();
+     //获取数据成功
+     ToastUtils.showToast(context, "刷新成功");
+
+     //将前面获取数据的方法进行统一刷新(获取推荐列表除外,因为其在下拉刷新外还有上拉刷新)
+     setState(() {});
+  }
+
   @override
   void initState() {
     super.initState();
-    _getBannerList();
+
+    /*_getBannerList();
     _getCategoryList();
     _getSpecialOfferList();
     _getInVogueList();
     _getOneStopList();
-    _getRecommendList();
+    _getRecommendList();*/
+
     _registerEvent();
+    //initState -> build ,此时RefreshIndicator才被创建并使用
+    //用微任务异步,等build之后再刷新
+    Future.microtask((){
+      _key.currentState?.show();
+    });
+
+    //还可以直接调用 _onRefresh(); 刷新,只是缺少了动画
   }
 
   final ScrollController _controller = ScrollController();
+
+  //GlobalKey可以创建一个key绑定到widget上进行操作
+  final GlobalKey<RefreshIndicatorState> _key = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
-      controller: _controller,
-      slivers : _getScrollChildren());
+    //可用于刷新的组件
+    return RefreshIndicator(
+        key: _key,
+        onRefresh: _onRefresh,
+        child:  CustomScrollView(
+          controller: _controller,
+          slivers : _getScrollChildren()
+          )
+        );
   }
 }
