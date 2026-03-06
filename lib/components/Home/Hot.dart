@@ -25,8 +25,9 @@ class _HotState extends State<Hot> {
   // 构建子项
   List<Widget> _getChildrenList() {
     return _items.map((item) {
-      return Container(
-        width: 80,
+      return Expanded(
+          child: Container(
+        //width: 80
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -35,12 +36,14 @@ class _HotState extends State<Hot> {
               borderRadius: BorderRadius.circular(12),
               child: Image.network(
                 item.picture,
-                width: 80,
+                fit: BoxFit.cover,
+                //width: 80,
                 height: 100,
                 errorBuilder: (context, error, stackTrace) {
                   return Image.asset(
                     "lib/assets/home_cmd_inner.png",
-                    width: 80,
+                    fit: BoxFit.cover,
+                    //width: 80,
                     height: 100,
                   );
                 },
@@ -56,6 +59,7 @@ class _HotState extends State<Hot> {
             ),
           ],
         ),
+        )
       );
     }).toList();
   }

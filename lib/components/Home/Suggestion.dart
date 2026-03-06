@@ -64,24 +64,25 @@ class _SuggestionState extends State<Suggestion> {
   List<Widget> _getChildrenList(){
     List<GoodsItem> list = _getDisplayItems();
     return List.generate(list.length,(int index){
-      return Column(
+      return Expanded(
+          child: Column(
         children: [
           //ClipRRect 可以包裹子元素 裁剪图片设置圆角
           ClipRRect(
             child: Image.network(
-              
+
               //防止图片加载失败
               errorBuilder: (context, error, stackTrace) {
                 return Image.asset(
                   "lib/assets/home_cmd_inner.png",
-                  width: 100,
+                  //width: 100,
                   height: 140,
                   fit: BoxFit.cover,
                 );
               },
 
               list[index].picture,
-              width: 100,
+              //width: 100,
               height: 140,
               fit: BoxFit.cover,
             ),
@@ -96,11 +97,12 @@ class _SuggestionState extends State<Suggestion> {
               color: const Color.fromARGB(255, 240, 96, 12)
             ),
             child: Text(
-              "￥${list[index].price}",
+              "￥${ double.parse(list[index].price).floor() }",
               style: TextStyle(color: Colors.white),
             ),
           ),
         ],
+        )
       );
     });
   }
@@ -130,10 +132,13 @@ class _SuggestionState extends State<Suggestion> {
           Row(children: [
             _buildLeft(),
 
+            SizedBox(width: 10,),
+
             Expanded(child: 
               Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: _getChildrenList()
+                spacing: 10,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: _getChildrenList()
               )
             )
           ],)
