@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:shop/components/Home/MoreList.dart';
 import 'package:shop/components/Mine/Guess.dart';
+import 'package:shop/stores/UserController.dart';
 
 import '../../api/Mine.dart';
 import '../../viewModels/Home.dart';
@@ -13,6 +17,10 @@ class MineView extends StatefulWidget {
 }
 
 class _MineViewState extends State<MineView> {
+
+  // 初始化（如果已存在则返回现有实例）
+  final UserController _userController = Get.put(UserController());
+
   Widget _buildHeader() {
     return Container(
       decoration: BoxDecoration(
@@ -30,12 +38,22 @@ class _MineViewState extends State<MineView> {
       padding: const EdgeInsets.only(left: 20, right: 40, top: 80, bottom: 20),
       child: Row(
         children: [
+         /* Obx：这是一个响应式包装器，它会自动监听内部使用的所有可观察变量（如 _userController.user）。
+          当这些变量的 .value 改变时，Obx 会重新执行其 builder 函数，更新 UI。
+          自动刷新：当用户在登录页登录后，_userController.user.value 被更新，
+          此时 MineView 中的两个 Obx 会自动重建，显示最新的用户信息。*/
+          Obx((){
+            return CircleAvatar(
+              radius: 26,                           // 半径26像素
+              backgroundImage:
+              _userController.user.value.id.isNotEmpty
+              ? NetworkImage(_userController.user.value.avatar)
+              : AssetImage('lib/assets/goods_avatar.png'),
+              backgroundColor: Colors.white,         // 背景色（图片加载失败时显示）
+            );
+          }),
           // CircleAvatar 是 Flutter 中的一个用于显示圆形头像的组件。它通常用来展示用户头像、联系人图片
-          CircleAvatar(
-            radius: 26,                           // 半径26像素
-            backgroundImage: const AssetImage('lib/assets/goods_avatar.png'), // 本地图片
-            backgroundColor: Colors.white,         // 背景色（图片加载失败时显示）
-          ),
+
 
           const SizedBox(width: 12),
 
@@ -43,15 +61,23 @@ class _MineViewState extends State<MineView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                GestureDetector(
-                  onTap: (){
-                    Navigator.pushNamed(context, "/login");
-                  },
-                  child: Text(
-                    '立即登录',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                  ),
-                )
+                //Obx必须有可监测的响应式数据
+                Obx((){
+                  return GestureDetector(
+                    onTap: (){
+                      //没有用户信息时可登录
+                      if(_userController.user.value.id.isEmpty){
+                        Navigator.pushNamed(context, "/login");
+                      }
+                    },
+                    child: Text(
+                      _userController.user.value.id.isNotEmpty
+                      ? _userController.user.value.account
+                      : '立即登录',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                    ),
+                  );
+                })
               ],
             ),
           ),
