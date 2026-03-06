@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:shop/api/User.dart';
 import 'package:shop/utils/ToastUtils.dart';
@@ -76,7 +77,7 @@ class _LoginPageState extends State<LoginPage> {
       ToastUtils.showToast(context, "登录成功");
       Navigator.pop(context);
     }catch(e) {
-      ToastUtils.showToast(context, e.toString());
+      ToastUtils.showToast(context, (e as DioException).message);
     }
   }
 
