@@ -18,8 +18,7 @@ class MineView extends StatefulWidget {
 
 class _MineViewState extends State<MineView> {
 
-  // 初始化（如果已存在则返回现有实例）
-  final UserController _userController = Get.put(UserController());
+  final UserController _userController = Get.find();
 
   Widget _buildHeader() {
     return Container(
