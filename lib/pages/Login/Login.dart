@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shop/api/User.dart';
 import 'package:shop/utils/ToastUtils.dart';
 
 class LoginPage extends StatefulWidget {
@@ -64,6 +65,21 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  //登录校验
+  void _login() async{
+    try{
+      final res = await loginAPI({
+        "account" : _phoneController.text,
+        "password" : _codeController.text
+      });
+
+      ToastUtils.showToast(context, "登录成功");
+      Navigator.pop(context);
+    }catch(e) {
+      ToastUtils.showToast(context, e.toString());
+    }
+  }
+
   // 登录按钮Widget
   Widget _buildLoginButton() {
     return SizedBox(
@@ -74,6 +90,8 @@ class _LoginPageState extends State<LoginPage> {
           if(_key.currentState!.validate()){
               if(!_isChecked){
                 ToastUtils.showToast(context, "请勾选用户协议");
+              }else{
+                _login();
               }
           }
         },
