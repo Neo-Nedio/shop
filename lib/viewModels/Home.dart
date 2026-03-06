@@ -121,7 +121,7 @@ class GoodsItem{
 class GoodDetailItem extends GoodsItem {
   int payCount = 0;
 
-  /// 商品详情项
+  // 商品详情项
   GoodDetailItem({
     required super.id,
     required super.name,
@@ -139,6 +139,29 @@ class GoodDetailItem extends GoodsItem {
       picture: json["picture"]?.toString() ?? "",
       orderNum: int.tryParse(json["orderNum"]?.toString() ?? "0") ?? 0,
       payCount: int.tryParse(json["payCount"]?.toString() ?? "0") ?? 0,
+    );
+  }
+}
+
+//猜你喜欢
+class GoodsDetailsItems{
+  int counts;
+  int pageSize;
+  int pages;
+  int page;
+  List<GoodDetailItem> items;
+
+  GoodsDetailsItems({required this.counts, required this.pageSize, required this.pages, required this.page, required this.items});
+
+  factory GoodsDetailsItems.formJson(Map<String,dynamic> json){
+    return GoodsDetailsItems(
+      counts: json["counts"] ?? 0,
+      pageSize: json["pageSize"] ?? 0,
+      pages: json["pages"] ?? 0,
+      page: json["page"] ?? 1,
+      items: json["items"] != null
+          ? (json["items"] as List).map((item) => GoodDetailItem.formJSON(item as Map<String,dynamic>)).toList()
+          : <GoodDetailItem>[],
     );
   }
 }
