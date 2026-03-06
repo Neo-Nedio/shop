@@ -5,6 +5,7 @@ import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:shop/api/User.dart';
 import 'package:shop/stores/TokenManager.dart';
 import 'package:shop/stores/UserController.dart';
+import 'package:shop/utils/LoadingDialog.dart';
 import 'package:shop/utils/ToastUtils.dart';
 
 class LoginPage extends StatefulWidget {
@@ -74,6 +75,8 @@ class _LoginPageState extends State<LoginPage> {
   //登录校验
   void _login() async{
     try{
+      LoadingDialog.show(context,message: "登录中");
+
       final res = await loginAPI({
         "account" : _phoneController.text,
         "password" : _codeController.text
@@ -85,6 +88,8 @@ class _LoginPageState extends State<LoginPage> {
       Navigator.pop(context);
     }catch(e) {
       ToastUtils.showToast(context, (e as DioException).message);
+    }finally{
+      LoadingDialog.hide(context);
     }
   }
 
